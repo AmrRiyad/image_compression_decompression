@@ -1,6 +1,5 @@
 import math
 from math import log2
-
 import numpy
 from PIL import Image
 import numpy as np
@@ -25,7 +24,7 @@ def calc_mean(blocks, n, m):
             for block in blocks:
                 if i >= len(block):
                     break
-                if j >= (len(blocks[i])):
+                if j >= (len(blocks[0])):
                     break
                 summ += block[i][j]
             temp.append(int(summ / len(blocks)))
@@ -138,13 +137,33 @@ def decoder(codebook, compressedImage, originalHeight, originalWidth, vectorWidt
     return orignalImage
 
 
-imgPath = 'one.jpg'
+imgPath = 'two.jpg'
 img = Image.open(imgPath).convert("L")
+original_hight, original_width = img.size
+img = img.resize((1080, 1080))
 imgArr = np.asarray(img)
 
-x, y = encode(imgArr, 2, 2, 8)
-final = decoder(x, y, len(imgArr), len(imgArr[0]), 2, 2)
-savePath = 'something3.jpg'
-print("hi")
+vector_height = 60
+vector_width = 60
+
+x, y = encode(imgArr, vector_height, vector_width, 16)
+final = decoder(x, y, 1080, 1080, vector_height, vector_width)
+savePath = 'codebook_16__60x60.jpg'
+
+original_image_size = original_hight * original_width * 8
+number_of_blocks = (original_hight * original_width) / (vector_height * vector_width)
+label_size = number_of_blocks * log2(number_of_blocks)
+codebook_size = number_of_blocks * vector_height * vector_width * 8
+total_compressed_size = codebook_size + label_size
+compression_ratio = original_image_size / total_compressed_size
+
+# print("Original image size: " + original_image_size)
+# print("Number of blocks: " + number_of_blocks)
+# print("Label size: " + label_size)
+# print("Codebook size: " + codebook_size)
+# print("Total compressed size: " + total_compressed_size)
+# print("Compression ratio: " + compression_ratio)
+
 decodedImg = Image.fromarray(final)
+decodedImg = decodedImg.resize((original_hight, original_width))
 decodedImg.save(savePath)
