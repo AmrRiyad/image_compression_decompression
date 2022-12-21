@@ -9,9 +9,9 @@ import numpy as np
 def spliter(array, vectorHeight, vectorWidth):
     blocks = []
 
-    for i in range(0, array.shape[0], vectorWidth):
-        for j in range(0, array.shape[1], vectorHeight):
-            blocks.append(array[i:i + vectorWidth, j:j + vectorHeight])
+    for i in range(0, array.shape[0], vectorHeight):
+        for j in range(0, array.shape[1], vectorWidth):
+            blocks.append(array[i:i + vectorHeight, j:j + vectorWidth])
 
     return blocks
 
@@ -23,6 +23,10 @@ def calc_mean(blocks, n, m):
     for i in range(0, n):
         for j in range(0, m):
             for block in blocks:
+                if i >= len(block):
+                    break
+                if j >= (len(blocks[i])):
+                    break
                 summ += block[i][j]
             temp.append(int(summ / len(blocks)))
             summ = 0
@@ -35,6 +39,10 @@ def dis(vec1, vec2, n, m):
     summ = 0
     for i in range(0, n):
         for j in range(0, m):
+            if i >= len(vec1):
+                break
+            if j >= (len(vec1[i])):
+                break
             summ += abs(vec1[i][j] - vec2[i][j])
     return summ
 
@@ -74,12 +82,12 @@ def sol(vec, curr_blocks, n, m, k):
         else:
             right_blocks.append(i)
 
-    new_vec1 = calc_mean(left_blocks, n, m)
-    new_vec2 = calc_mean(right_blocks, n, m)
-
     if len(left_blocks) != 0:
+        new_vec1 = calc_mean(left_blocks, n, m)
         sol(new_vec1, left_blocks, n, m, k - 1)
+
     if len(right_blocks) != 0:
+        new_vec2 = calc_mean(right_blocks, n, m)
         sol(new_vec2, right_blocks, n, m, k - 1)
 
 
@@ -96,9 +104,10 @@ def encode(data, n, m, k):
     j = 0
 
     for block in blocks:
-        mn = 1000000000000
+        mn = 100000000000000
         for code in code_book:
             if dis(block, code[1], n, m) < mn:
+                mn = dis(block, code[1], n, m)
                 compressedImage[i][j] = code[0]
         j += 1
         if j == compressedImageSize:
@@ -108,12 +117,12 @@ def encode(data, n, m, k):
     return code_book, compressedImage
 
 
-def decoder(codebook, compressedImage, originalSize, vectorWidth, vectorHeight):
+def decoder(codebook, compressedImage, originalHeight, originalWidth, vectorWidth, vectorHeight):
     imgArr = []
-    orignalImage = [[0 for i in range(originalSize)] for j in range(originalSize)]
+    orignalImage = [[0 for i in range(originalHeight)] for j in range(originalWidth)]
     for i in range(0, len(compressedImage)):
         for j in range(0, len(compressedImage)):
-            imgArr.append(codebook[compressedImage[i][j]])
+            imgArr.append(codebook[compressedImage[i][j]][1])
 
     imgArr = np.array(imgArr)
     orignalImage = np.array(orignalImage)
@@ -121,9 +130,9 @@ def decoder(codebook, compressedImage, originalSize, vectorWidth, vectorHeight):
     orignalImage = orignalImage.astype('uint8')
 
     blockIndex = 0
-    for i in range(0, originalSize, vectorWidth):
-        for j in range(0, originalSize, vectorHeight):
-            orignalImage[i:i + vectorWidth, j:j + vectorHeight] = imgArr[blockIndex]
+    for i in range(0, originalHeight, vectorHeight):
+        for j in range(0, originalWidth, vectorWidth):
+            orignalImage[i:i + vectorHeight, j:j + vectorWidth] = imgArr[blockIndex]
             blockIndex += 1
 
     return orignalImage
@@ -133,9 +142,9 @@ imgPath = 'one.jpg'
 img = Image.open(imgPath).convert("L")
 imgArr = np.asarray(img)
 
-x, y = encode(imgArr, 3, 3, 4)
-final = decoder(x, y, 1080, 3, 3)
-savePath = 'something.png'
+x, y = encode(imgArr, 2, 2, 8)
+final = decoder(x, y, len(imgArr), len(imgArr[0]), 2, 2)
+savePath = 'something3.jpg'
 print("hi")
 decodedImg = Image.fromarray(final)
-decodedImg.save(savePath)  # will save it as gray image
+decodedImg.save(savePath)
