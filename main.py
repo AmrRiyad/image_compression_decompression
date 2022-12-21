@@ -137,33 +137,54 @@ def decoder(codebook, compressedImage, originalHeight, originalWidth, vectorWidt
     return orignalImage
 
 
-imgPath = 'two.jpg'
-img = Image.open(imgPath).convert("L")
-original_hight, original_width = img.size
-img = img.resize((1080, 1080))
-imgArr = np.asarray(img)
+# imgPath = 'two.jpg'
+# img = Image.open(imgPath).convert("L")
+# original_hight, original_width = img.size
+# img = img.resize((1080, 1080))
+# imgArr = np.asarray(img)
+#
+# vector_height = 60
+# vector_width = 60
+#
+# x, y = encode(imgArr, vector_height, vector_width, 16)
+# final = decoder(x, y, 1080, 1080, vector_height, vector_width)
+# savePath = 'X.jpg'
+#
+# decodedImg = Image.fromarray(final)
+# decodedImg = decodedImg.resize((original_hight, original_width))
+# decodedImg.save(savePath)
+#
+#
+#
+#
+# original_image_size = original_hight * original_width * 8
+# number_of_blocks = (original_hight * original_width) / (vector_height * vector_width)
+# label_size = number_of_blocks * log2(number_of_blocks)
+# codebook_size = number_of_blocks * vector_height * vector_width * 8
+# total_compressed_size = codebook_size + label_size
+# compression_ratio = original_image_size / total_compressed_size
+#
+# file1 = open("Calculation.txt", "w")
+# p1 = "Original image size: " + str(original_image_size)
+# p2 = "Number of blocks: " + str(number_of_blocks)
+# p3 = "Label size: " + str(label_size)
+# p4 = "Codebook size: " + str(codebook_size)
+# p5 = "Total compressed size: " + str(total_compressed_size)
+# p6 = "Compression ratio: " + str(compression_ratio)
+# file1.write(p1)
+# file1.write(p2)
+# file1.write(p3)
+# file1.write(p4)
+# file1.write(p5)
+# file1.write(p6)
+# file1.close()
+#
+# file2 = open("CompressedImage.txt", "w")
+# file2.write(str(y))
+# file2.close()
+#
+# file3 = open("Table.txt", "w")
+# file3.write(str(x))
+# file3.close()
 
-vector_height = 60
-vector_width = 60
 
-x, y = encode(imgArr, vector_height, vector_width, 16)
-final = decoder(x, y, 1080, 1080, vector_height, vector_width)
-savePath = 'codebook_16__60x60.jpg'
-
-original_image_size = original_hight * original_width * 8
-number_of_blocks = (original_hight * original_width) / (vector_height * vector_width)
-label_size = number_of_blocks * log2(number_of_blocks)
-codebook_size = number_of_blocks * vector_height * vector_width * 8
-total_compressed_size = codebook_size + label_size
-compression_ratio = original_image_size / total_compressed_size
-
-# print("Original image size: " + original_image_size)
-# print("Number of blocks: " + number_of_blocks)
-# print("Label size: " + label_size)
-# print("Codebook size: " + codebook_size)
-# print("Total compressed size: " + total_compressed_size)
-# print("Compression ratio: " + compression_ratio)
-
-decodedImg = Image.fromarray(final)
-decodedImg = decodedImg.resize((original_hight, original_width))
-decodedImg.save(savePath)
