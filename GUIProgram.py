@@ -18,6 +18,8 @@ import main
 import math
 
 path = ""
+
+
 class Ui_MainWindow(QWidget):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -420,7 +422,7 @@ class Ui_MainWindow(QWidget):
                                          "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
                                          "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
                                          "p, li { white-space: pre-wrap; }\n"
-                                         "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
+                                         "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:15pt; font-weight:400; font-style:normal;\">\n"
                                          "<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.label_3.setWhatsThis(
             _translate("MainWindow", "<html><head/><body><p align=\"center\"><br/></p></body></html>"))
@@ -430,7 +432,7 @@ class Ui_MainWindow(QWidget):
                                            "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
                                            "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
                                            "p, li { white-space: pre-wrap; }\n"
-                                           "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
+                                           "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:15pt; font-weight:400; font-style:normal;\">\n"
                                            "<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.label_4.setWhatsThis(
             _translate("MainWindow", "<html><head/><body><p align=\"center\"><br/></p></body></html>"))
@@ -440,12 +442,12 @@ class Ui_MainWindow(QWidget):
                                            "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
                                            "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
                                            "p, li { white-space: pre-wrap; }\n"
-                                           "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
+                                           "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:15pt; font-weight:400; font-style:normal;\">\n"
                                            "<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.pushButton.setWhatsThis(_translate("MainWindow", "<html><head/><body><p><br/></p></body></html>"))
         self.pushButton.setText(_translate("MainWindow", "Encode"))
         self.pushButton_3.setWhatsThis(_translate("MainWindow", "<html><head/><body><p><br/></p></body></html>"))
-        self.pushButton_3.setText(_translate("MainWindow", "Browe"))
+        self.pushButton_3.setText(_translate("MainWindow", "Browse"))
 
         self.button = QPushButton("Bro")
         # self.button.clicked.connect(self.clicker())
@@ -462,54 +464,58 @@ class Ui_MainWindow(QWidget):
         self.label_6.setPixmap(self.pixmap)
         global path
         path = fname[0]
+
     def encoder(self):
-       if len(self.textEdit_3.toPlainText()) == 0 or len(self.textEdit.toPlainText()) == 0 or len(self.textEdit_5.toPlainText()) == 0 or path == "":
-           self.label_7.setText("Please Fill all data")
-           return
-       # x, y = encode(imgArr, vector_height, vector_width, 16)
-       img = Image.open(path).convert("L")
-       original_hight, original_width = img.size
-       img = img.resize((1080, 1080))
-       imgArr = np.asarray(img)
-       x, y = main.encode(imgArr, int(self.textEdit.toPlainText()), int(self.textEdit_5.toPlainText()), int(self.textEdit_3.toPlainText()))
-       final = main.decoder(x, y, 1080, 1080, int(self.textEdit.toPlainText()), int(self.textEdit_5.toPlainText()))
-       savePath = 'X.jpg'
+        if len(self.textEdit_3.toPlainText()) == 0 or len(self.textEdit.toPlainText()) == 0 or len(
+                self.textEdit_5.toPlainText()) == 0 or path == "":
+            self.label_7.setText("Please Fill all data")
+            return
+        # x, y = encode(imgArr, vector_height, vector_width, 16)
+        img = Image.open(path).convert("L")
+        original_hight, original_width = img.size
+        img = img.resize((1080, 1080))
+        imgArr = np.asarray(img)
+        x, y = main.encode(imgArr, int(self.textEdit.toPlainText()), int(self.textEdit_5.toPlainText()),
+                           int(self.textEdit_3.toPlainText()))
+        final = main.decoder(x, y, 1080, 1080, int(self.textEdit.toPlainText()), int(self.textEdit_5.toPlainText()))
+        savePath = 'X.jpg'
 
-       decodedImg = Image.fromarray(final)
-       decodedImg = decodedImg.resize((original_hight, original_width))
-       decodedImg.save(savePath)
-       self.pixmap2 = QPixmap(savePath)
-       self.pixmap2 = self.pixmap2.scaled(256, 256)
-       self.label_7.setPixmap(self.pixmap2)
-       original_image_size = original_hight * original_width * 8
-       number_of_blocks = (original_hight * original_width) / (int(self.textEdit.toPlainText()) *  int(self.textEdit_5.toPlainText()))
-       label_size = number_of_blocks * math.log2(number_of_blocks)
-       codebook_size = number_of_blocks * int(self.textEdit.toPlainText()) *  int(self.textEdit_5.toPlainText()) * 8
-       total_compressed_size = codebook_size + label_size
-       compression_ratio = original_image_size / total_compressed_size
+        decodedImg = Image.fromarray(final)
+        decodedImg = decodedImg.resize((original_hight, original_width))
+        decodedImg.save(savePath)
+        self.pixmap2 = QPixmap(savePath)
+        self.pixmap2 = self.pixmap2.scaled(256, 256)
+        self.label_7.setPixmap(self.pixmap2)
+        original_image_size = original_hight * original_width * 8
+        number_of_blocks = (original_hight * original_width) / (
+                    int(self.textEdit.toPlainText()) * int(self.textEdit_5.toPlainText()))
+        label_size = number_of_blocks * math.log2(number_of_blocks)
+        codebook_size = number_of_blocks * int(self.textEdit.toPlainText()) * int(self.textEdit_5.toPlainText()) * 8
+        total_compressed_size = codebook_size + label_size
+        compression_ratio = original_image_size / total_compressed_size
 
-       file1 = open("Calculation.txt", "w")
-       p1 = "Original image size: " + str(original_image_size) + "\n"
-       p2 = "Number of blocks: " + str(number_of_blocks) + "\n"
-       p3 = "Label size: " + str(label_size) + "\n"
-       p4 = "Codebook size: " + str(codebook_size) + "\n"
-       p5 = "Total compressed size: " + str(total_compressed_size) + "\n"
-       p6 = "Compression ratio: " + str(compression_ratio) + "\n"
-       file1.write(p1)
-       file1.write(p2)
-       file1.write(p3)
-       file1.write(p4)
-       file1.write(p5)
-       file1.write(p6)
-       file1.close()
+        file1 = open("Calculation.txt", "w")
+        p1 = "Original image size: " + str(original_image_size) + "\n"
+        p2 = "Number of blocks: " + str(number_of_blocks) + "\n"
+        p3 = "Label size: " + str(label_size) + "\n"
+        p4 = "Codebook size: " + str(codebook_size) + "\n"
+        p5 = "Total compressed size: " + str(total_compressed_size) + "\n"
+        p6 = "Compression ratio: " + str(compression_ratio) + "\n"
+        file1.write(p1)
+        file1.write(p2)
+        file1.write(p3)
+        file1.write(p4)
+        file1.write(p5)
+        file1.write(p6)
+        file1.close()
 
-       file2 = open("CompressedImage.txt", "w")
-       file2.write(str(y))
-       file2.close()
+        file2 = open("CompressedImage.txt", "w")
+        file2.write(str(y))
+        file2.close()
 
-       file3 = open("Table.txt", "w")
-       file3.write(str(x))
-       file3.close()
+        file3 = open("Table.txt", "w")
+        file3.write(str(x))
+        file3.close()
 
 
 if __name__ == "__main__":
